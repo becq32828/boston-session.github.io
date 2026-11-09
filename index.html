@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Copilot in action: follow-along guide for Dover</title>
+<style>
+:root{
+  --navy:#002B52; --blue:#004B8D; --sky:#00A3E0; --orange:#C2620A; --orange-bg:#FFF1E2;
+  --bg:#F4F7FA; --card:#FFFFFF; --ink:#0F1E30; --muted:#4A5A6B; --rule:#D3DCE6;
+  --chat:#1B6E4A; --chat-bg:#E6F4EC; --m365:#004B8D; --m365-bg:#E4EEF8;
+  --shadow:0 1px 2px rgba(0,43,82,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0C1724; --card:#13233A; --ink:#E8EEF5; --muted:#A7B6C7; --rule:#25405F;
+    --orange:#FFB467; --orange-bg:#3A2610; --chat-bg:#12321F; --chat:#7FD3A5;
+    --m365-bg:#162E4C; --m365:#9CC4F0; --blue:#6FA8E6;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Segoe UI",Calibri,Arial,sans-serif;font-size:16px;line-height:1.55;
+  color:var(--ink);background:var(--bg)}
+a{color:var(--blue)}
+.wrap{max-inline-size:1080px;margin-inline:auto;padding-inline:20px}
+/* header */
+.hero{background:var(--navy);color:#fff;padding-block:28px 26px}
+.hero .wrap{display:flex;gap:24px;align-items:center;flex-wrap:wrap}
+.hero img{block-size:44px;inline-size:auto}
+.hero h1{margin:0;font-size:30px;line-height:1.2;font-family:"Trebuchet MS","Segoe UI",sans-serif}
+.hero p{margin:4px 0 0;color:#BFD0E3}
+.hero .ht{flex:1 1 420px}
+/* nav */
+nav.top{position:sticky;inset-block-start:0;z-index:5;background:var(--blue);}
+nav.top .wrap{display:flex;gap:4px;flex-wrap:wrap;align-items:center;padding-block:6px}
+nav.top a{color:#fff;text-decoration:none;padding:6px 12px;border-radius:6px;font-weight:600;font-size:14px}
+nav.top a:hover,nav.top a:focus-visible{background:rgba(255,255,255,.16)}
+nav.top .prog{margin-inline-start:auto;color:#fff;font-size:14px;font-weight:600}
+nav.top .prog b{color:#FFD9A8}
+main{padding-block:24px 40px}
+section{margin-block-end:34px}
+h2{font-family:"Trebuchet MS","Segoe UI",sans-serif;color:var(--blue);font-size:24px;margin:0 0 6px}
+.sub{color:var(--muted);margin:0 0 18px}
+/* start-here steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.step{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:16px;box-shadow:var(--shadow)}
+.step .sn{display:inline-grid;place-items:center;inline-size:30px;block-size:30px;border-radius:50%;
+  background:var(--blue);color:#fff;font-weight:700;margin-block-end:8px}
+.step h3{margin:0 0 4px;font-size:17px}
+.step p{margin:0;color:var(--muted)}
+/* how-to strip */
+.how{display:flex;flex-wrap:wrap;gap:8px;margin-block-start:16px;align-items:center}
+.how span{background:var(--card);border:1px solid var(--rule);border-radius:999px;padding:6px 14px;font-weight:600;font-size:14px}
+.how .arrow{border:0;background:none;padding:0;color:var(--muted)}
+/* licence toggle */
+.toggle{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:16px;margin-block-start:16px}
+.toggle p{margin:0 0 10px;font-weight:600}
+.seg{display:inline-flex;border:2px solid var(--blue);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:transparent;color:var(--blue);font:inherit;font-weight:700;padding:8px 16px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--blue);color:#fff}
+.toggle small{display:block;margin-block-start:8px;color:var(--muted)}
+/* guardrails */
+.guard{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.gcol{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:16px}
+.gcol h3{margin:0 0 8px;font-size:15px;letter-spacing:.04em;text-transform:uppercase}
+.gcol ul{margin:0;padding-inline-start:18px}
+.gcol li{margin-block-end:4px}
+.g-do h3{color:var(--chat)} .g-dont h3{color:#B3261E} .g-off h3{color:var(--muted)}
+@media (prefers-color-scheme: dark){.g-dont h3{color:#FF8A80}}
+/* cards */
+.part-h{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:20px;
+  margin-block-end:16px;box-shadow:var(--shadow)}
+.card-head{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-block-end:10px}
+.num{display:inline-grid;place-items:center;inline-size:44px;block-size:44px;border-radius:10px;
+  background:var(--navy);color:#fff;font-weight:800;font-size:20px;flex:none}
+.head-text{flex:1 1 300px}
+.tag{margin:0;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--sky)}
+.card h3{margin:0;font-size:20px}
+.badge{font-size:13px;font-weight:700;border-radius:999px;padding:4px 12px;white-space:nowrap}
+.b-chat{background:var(--chat-bg);color:var(--chat)}
+.b-m365{background:var(--m365-bg);color:var(--m365)}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:4px 24px}
+.lbl{margin:12px 0 4px;font-size:12px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+.card p{margin-block:0 4px}
+.pbox{position:relative;background:var(--bg);border:1px solid var(--rule);border-inline-start:4px solid var(--blue);
+  border-radius:8px;padding:14px 14px 14px 16px;padding-inline-end:120px}
+.ptext{margin:0;white-space:pre-wrap;font-family:Consolas,"Cascadia Mono",monospace;font-size:15px;line-height:1.5}
+.ph{color:var(--orange);background:var(--orange-bg);border-radius:4px;padding-inline:2px;font-weight:700}
+button.copy{font:inherit;cursor:pointer}
+.pbox > .copy{position:absolute;inset-block-start:10px;inset-inline-end:10px;background:var(--blue);color:#fff;
+  border:0;border-radius:6px;padding:8px 12px;font-weight:700;font-size:14px}
+.pbox > .copy:hover{filter:brightness(1.12)}
+.copy.ok{background:var(--chat)!important;color:#fff!important}
+.chips{display:flex;flex-direction:column;gap:6px}
+.chip{text-align:start;background:var(--card);border:1px dashed var(--blue);color:var(--ink);
+  border-radius:8px;padding:8px 12px;font-size:15px}
+.chip::before{content:"Copy \2192  ";font-weight:700;color:var(--blue);font-size:13px}
+.chip.ok::before{content:"Copied \2713  ";color:#fff}
+.fix{margin-block-start:12px!important;background:var(--orange-bg);border-radius:8px;padding:10px 12px}
+.fix-k{font-weight:700;color:var(--orange);margin-inline-end:6px}
+.done{display:inline-flex;gap:8px;align-items:center;margin-block-start:12px;font-weight:600;cursor:pointer}
+.done input{inline-size:20px;block-size:20px;accent-color:var(--chat)}
+.card.is-done{border-color:var(--chat)}
+.card.is-done .num{background:var(--chat)}
+.lic-note{display:none;background:var(--m365-bg);color:var(--m365);border-radius:8px;padding:8px 12px;margin-block-end:8px;font-weight:600}
+body.chat-only .demo[data-lic="m365"]{opacity:.55}
+body.chat-only .demo[data-lic="m365"] .lic-note{display:block}
+/* builder */
+.builder{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.builder label{display:block;font-weight:700;margin-block:10px 4px}
+.builder label small{font-weight:400;color:var(--muted)}
+.builder textarea{inline-size:100%;min-block-size:58px;font:inherit;font-size:15px;padding:8px 10px;
+  border:1px solid var(--rule);border-radius:8px;background:var(--card);color:var(--ink);resize:vertical}
+.out{background:var(--navy);color:#fff;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.out pre{margin:0;white-space:pre-wrap;font-family:Consolas,monospace;font-size:15px;min-block-size:150px}
+.out .copy{align-self:flex-start;background:var(--sky);color:#00213F;border:0;border-radius:6px;padding:8px 14px;font-weight:700}
+.out .muted{color:#9FB6CE;font-size:14px}
+/* library */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border-block-end:2px solid var(--rule);margin-block-end:14px}
+.tab{font:inherit;font-weight:700;border:0;background:transparent;color:var(--muted);padding:10px 16px;cursor:pointer;
+  border-block-end:3px solid transparent;margin-block-end:-2px}
+.tab[aria-selected="true"]{color:var(--blue);border-block-end-color:var(--blue)}
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.mini{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:14px}
+.mini-t{margin:0 0 8px;font-weight:700}
+.mini .pbox{padding-inline-end:84px}
+.power{display:flex;flex-wrap:wrap;gap:8px}
+.power .chip{flex:0 1 auto}
+/* checks + faq */
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.checks div{background:var(--navy);color:#fff;border-radius:10px;padding:16px}
+.checks h3{margin:0 0 6px;font-size:16px;color:#9FD8F2}
+.checks p{margin:0;color:#D6E2EF}
+details{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:12px 16px;margin-block-end:8px}
+summary{font-weight:700;cursor:pointer}
+details p{margin:8px 0 0;color:var(--muted)}
+footer{background:var(--navy);color:#BFD0E3;padding-block:20px;font-size:14px}
+footer p{margin:4px 0}
+.reset{font:inherit;background:transparent;border:1px solid #6E8BAA;color:#fff;border-radius:6px;padding:4px 10px;cursor:pointer}
+:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+@media print{
+  nav.top,.copy,.toggle,.done,.reset,.builder,.tabs{display:none!important}
+  .panel{display:block!important} body{background:#fff}
+  .card,.mini,details{break-inside:avoid;box-shadow:none}
+  .pbox{padding-inline-end:14px}
+  body.chat-only .demo[data-lic="m365"]{opacity:1}
+}
+</style>
+</head>
+<body>
+<div class="hero"><div class="wrap">
+  <img src="data:image/png;base64,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" alt="Dover">
+  <div class="ht">
+    <h1>Copilot in action: follow-along guide</h1>
+    <p>Dover Global IT Summit &middot; Monday, November 9, 2026 &middot; Cambridge, MA</p>
+  </div>
+</div></div>
+
+<nav class="top" aria-label="Sections"><div class="wrap">
+  <a href="#start">Start here</a>
+  <a href="#part1">Part 1: Copilot Chat</a>
+  <a href="#part2">Part 2: Microsoft 365 Copilot</a>
+  <a href="#more">Keep going</a>
+  <a href="#help">Help</a>
+  <span class="prog"><b id="prog-n">0</b> of 8 tried</span>
+</div></nav>
+
+<main class="wrap">
+
+<section id="start">
+  <h2>Start here</h2>
+  <p class="sub">Three things to do before the first demo. It takes about a minute.</p>
+  <div class="steps">
+    <div class="step"><span class="sn">1</span><h3>Open Copilot</h3>
+      <p>Go to <b>m365copilot.com</b>, or open the Copilot app or Copilot in Teams. Sign in with your <b>Dover work account</b>.</p></div>
+    <div class="step"><span class="sn">2</span><h3>Look for the shield</h3>
+      <p>A shield icon near the chat box means <b>enterprise data protection</b> is on. Your prompts stay inside Dover's Microsoft 365 boundary.</p></div>
+    <div class="step"><span class="sn">3</span><h3>Have a file ready</h3>
+      <p>Pick something of your own that isn't sensitive: a supplier quote, two spec sheets, a notice, or a spreadsheet of monthly numbers.</p></div>
+  </div>
+  <div class="how" aria-label="How every prompt works">
+    <span>1. Copy</span><span class="arrow">&rarr;</span>
+    <span>2. Paste into Copilot</span><span class="arrow">&rarr;</span>
+    <span>3. Change the <span class="ph">[orange words]</span></span><span class="arrow">&rarr;</span>
+    <span>4. Press Enter</span><span class="arrow">&rarr;</span>
+    <span>5. Check the answer</span>
+  </div>
+  <div class="toggle">
+    <p>Which Copilot do you have?</p>
+    <div class="seg" role="group" aria-label="Your Copilot">
+      <button type="button" data-lic="chat" aria-pressed="false">Copilot Chat only</button>
+      <button type="button" data-lic="m365" aria-pressed="true">Microsoft 365 Copilot licence</button>
+    </div>
+    <small>Not sure? If Copilot Chat shows <b>Work</b> and <b>Web</b> options at the top, you have the licence. Prompts 1&ndash;4 work for everyone; 5&ndash;8 need the licence.</small>
+  </div>
+</section>
+
+<section id="safe">
+  <h2>Using Copilot safely at Dover</h2>
+  <p class="sub">Copilot works inside the controls Dover already has. Your permissions, sensitivity labels and data loss prevention policies all still apply.</p>
+  <div class="guard">
+    <div class="gcol g-do"><h3>Do</h3><ul>
+      <li>Use your own work files and examples</li>
+      <li>Remove names and details you don't need</li>
+      <li>Check every fact and number before sharing</li>
+      <li>Treat every answer as a first draft</li></ul></div>
+    <div class="gcol g-dont"><h3>Don't</h3><ul>
+      <li>Paste confidential or restricted data</li>
+      <li>Upload personal, HR, medical, legal or pay information</li>
+      <li>Use Copilot to make decisions about people</li>
+      <li>Send output without reading it first</li></ul></div>
+    <div class="gcol g-off"><h3>Turned off at Dover today</h3><ul>
+      <li>AI image, video and audio generation</li>
+      <li>Full meeting recordings and transcripts</li>
+      <li>Copilot access to SharePoint sites and shared channels</li>
+      <li>Custom agents and extensions</li></ul></div>
+  </div>
+</section>
+
+<section id="part1">
+  <div class="part-h"><h2>Part 1: Copilot Chat</h2><span class="badge b-chat">Everyone &middot; included with Microsoft 365</span></div>
+  <p class="sub">These four work for every Dover employee. Copilot Chat uses the web and the files you give it.</p>
+  
+<article class="card demo" id="demo1" data-lic="chat">
+  <header class="card-head">
+    <span class="num">1</span>
+    <div class="head-text">
+      <p class="tag">Upload a file</p>
+      <h3>Summarise a file and find what to negotiate</h3>
+    </div>
+    <span class="badge b-chat">Copilot Chat &middot; everyone</span>
+  </header>
+  <div class="lic-note">This one needs a Microsoft 365 Copilot licence. Watch the demo, or switch
+    the toggle at the top if you have one.</div>
+  <div class="grid2">
+    <div><p class="lbl">Where</p><p>Copilot Chat. Select <b>+</b> (or the paperclip) &rarr; <b>Upload</b>, and pick your file.</p></div>
+    <div><p class="lbl">You'll need</p><p>One of your own documents. Example: a supplier quote, a contract summary, a proposal.</p></div>
+  </div>
+  <p class="lbl">Prompt</p><div class="pbox"><pre class="ptext">Summarise this <span class="ph">[supplier quote]</span> in five bullets. Then list the five terms I should negotiate, with one line on why each one matters to us.</pre><button type="button" class="copy" data-copy="Summarise this [supplier quote] in five bullets. Then list the five terms I should negotiate, with one line on why each one matters to us.">Copy prompt</button></div>
+  <p class="lbl">What you should see</p><p>Five short bullets, then a numbered list of terms (price, payment terms, lead time, warranty and so on), each with a reason.</p>
+  <p class="lbl">Then try</p><div class="chips"><button type="button" class="chip copy" data-copy="Turn those five terms into a short email to the supplier asking for revised terms. Polite, firm, under 150 words.">Turn those five terms into a short email to the supplier asking for revised terms. Polite, firm, under 150 words.</button><button type="button" class="chip copy" data-copy="What did you assume that is not actually in the document?">What did you assume that is not actually in the document?</button></div>
+  <p class="fix"><span class="fix-k">If it doesn't work</span> Nothing happens after upload? Wait for the file name to appear in the chat box before you press Enter.</p>
+  <label class="done"><input type="checkbox" class="done-box" data-id="demo1"> I tried this one</label>
+</article>
+<article class="card demo" id="demo2" data-lic="chat">
+  <header class="card-head">
+    <span class="num">2</span>
+    <div class="head-text">
+      <p class="tag">Rewrite</p>
+      <h3>Rewrite for the shop floor, in two languages</h3>
+    </div>
+    <span class="badge b-chat">Copilot Chat &middot; everyone</span>
+  </header>
+  <div class="lic-note">This one needs a Microsoft 365 Copilot licence. Watch the demo, or switch
+    the toggle at the top if you have one.</div>
+  <div class="grid2">
+    <div><p class="lbl">Where</p><p>Copilot Chat. Upload the document, or paste the text straight into the chat box.</p></div>
+    <div><p class="lbl">You'll need</p><p>A notice, bulletin, procedure or announcement your teams need to read.</p></div>
+  </div>
+  <p class="lbl">Prompt</p><div class="pbox"><pre class="ptext">Rewrite this <span class="ph">[safety bulletin]</span> for shop-floor teams. Use plain English, short sentences and no jargon. Keep every instruction and number exactly as written. Then give me the same text in <span class="ph">[Spanish]</span>.</pre><button type="button" class="copy" data-copy="Rewrite this [safety bulletin] for shop-floor teams. Use plain English, short sentences and no jargon. Keep every instruction and number exactly as written. Then give me the same text in [Spanish].">Copy prompt</button></div>
+  <p class="lbl">What you should see</p><p>A shorter, plainer version in English, followed by the translation. Every number and instruction should still be there.</p>
+  <p class="lbl">Then try</p><div class="chips"><button type="button" class="chip copy" data-copy="Make it fit on one printed page and add a three-line summary at the top.">Make it fit on one printed page and add a three-line summary at the top.</button><button type="button" class="chip copy" data-copy="List anything in the original that was unclear or could be misread.">List anything in the original that was unclear or could be misread.</button></div>
+  <p class="fix"><span class="fix-k">If it doesn't work</span> Always have a fluent speaker check the translation before it goes on a wall.</p>
+  <label class="done"><input type="checkbox" class="done-box" data-id="demo2"> I tried this one</label>
+</article>
+<article class="card demo" id="demo3" data-lic="chat">
+  <header class="card-head">
+    <span class="num">3</span>
+    <div class="head-text">
+      <p class="tag">Compare</p>
+      <h3>Compare two documents side by side</h3>
+    </div>
+    <span class="badge b-chat">Copilot Chat &middot; everyone</span>
+  </header>
+  <div class="lic-note">This one needs a Microsoft 365 Copilot licence. Watch the demo, or switch
+    the toggle at the top if you have one.</div>
+  <div class="grid2">
+    <div><p class="lbl">Where</p><p>Copilot Chat. Upload <b>both</b> files into the same message.</p></div>
+    <div><p class="lbl">You'll need</p><p>Two similar documents. Example: two spec sheets, two quotes, two versions of a procedure.</p></div>
+  </div>
+  <p class="lbl">Prompt</p><div class="pbox"><pre class="ptext">Compare these two <span class="ph">[pump spec sheets]</span> in a table with a row for each of <span class="ph">[flow, pressure, materials, price]</span>. Add a final row with the key differences, and flag anything one document states that the other leaves out.</pre><button type="button" class="copy" data-copy="Compare these two [pump spec sheets] in a table with a row for each of [flow, pressure, materials, price]. Add a final row with the key differences, and flag anything one document states that the other leaves out.">Copy prompt</button></div>
+  <p class="lbl">What you should see</p><p>A table with one column per document, plus a row of differences and gaps.</p>
+  <p class="lbl">Then try</p><div class="chips"><button type="button" class="chip copy" data-copy="Which one fits [a high-temperature application] better, and what should I confirm with the supplier before deciding?">Which one fits <span class="ph">[a high-temperature application]</span> better, and what should I confirm with the supplier before deciding?</button><button type="button" class="chip copy" data-copy="Turn the table into three bullet points I can paste into an email.">Turn the table into three bullet points I can paste into an email.</button></div>
+  <p class="fix"><span class="fix-k">If it doesn't work</span> If it only reads one file, upload them again together in a single message.</p>
+  <label class="done"><input type="checkbox" class="done-box" data-id="demo3"> I tried this one</label>
+</article>
+<article class="card demo" id="demo4" data-lic="chat">
+  <header class="card-head">
+    <span class="num">4</span>
+    <div class="head-text">
+      <p class="tag">Prompt coach</p>
+      <h3>Let Copilot coach your prompt</h3>
+    </div>
+    <span class="badge b-chat">Copilot Chat &middot; everyone</span>
+  </header>
+  <div class="lic-note">This one needs a Microsoft 365 Copilot licence. Watch the demo, or switch
+    the toggle at the top if you have one.</div>
+  <div class="grid2">
+    <div><p class="lbl">Where</p><p>Copilot Chat. No file needed.</p></div>
+    <div><p class="lbl">You'll need</p><p>A task you do often and would like help with.</p></div>
+  </div>
+  <p class="lbl">Prompt</p><div class="pbox"><pre class="ptext">I want Copilot to help me with <span class="ph">[describe your task in one sentence]</span>. Before you answer, ask me three questions that would make this request better.</pre><button type="button" class="copy" data-copy="I want Copilot to help me with [describe your task in one sentence]. Before you answer, ask me three questions that would make this request better.">Copy prompt</button></div>
+  <p class="lbl">What you should see</p><p>Three questions about your audience, format or source. Answer them in your next message.</p>
+  <p class="lbl">Then try</p><div class="chips"><button type="button" class="chip copy" data-copy="Now write the best possible prompt for this task, so I can save it and reuse it.">Now write the best possible prompt for this task, so I can save it and reuse it.</button></div>
+  <p class="fix"><span class="fix-k">If it doesn't work</span> Short on ideas? Try: &ldquo;writing the weekly IT status update for my OpCo&rdquo;.</p>
+  <label class="done"><input type="checkbox" class="done-box" data-id="demo4"> I tried this one</label>
+</article>
+</section>
+
+<section id="part2">
+  <div class="part-h"><h2>Part 2: Microsoft 365 Copilot</h2><span class="badge b-m365">Licensed users</span></div>
+  <p class="sub">These use your own email, meetings, chats and files. They're all included in the licence; there's no extra usage charge.</p>
+  
+<article class="card demo" id="demo5" data-lic="m365">
+  <header class="card-head">
+    <span class="num">5</span>
+    <div class="head-text">
+      <p class="tag">Scheduled prompt</p>
+      <h3>Get a briefing every Monday, automatically</h3>
+    </div>
+    <span class="badge b-m365">Microsoft 365 Copilot &middot; licensed</span>
+  </header>
+  <div class="lic-note">This one needs a Microsoft 365 Copilot licence. Watch the demo, or switch
+    the toggle at the top if you have one.</div>
+  <div class="grid2">
+    <div><p class="lbl">Where</p><p>Copilot Chat, <b>Work</b> mode. Run the prompt once. Then point at your prompt, select <b>&hellip; More</b> &rarr; <b>Schedule this prompt</b>, and choose Weekly, Monday, 7:00 AM.</p></div>
+    <div><p class="lbl">You'll need</p><p>Nothing to upload. Copilot uses your own email, meetings and chats.</p></div>
+  </div>
+  <p class="lbl">Prompt</p><div class="pbox"><pre class="ptext">Brief me on last week&#x27;s emails, meetings and chats about <span class="ph">[project or customer name]</span>. Give me: what changed, decisions made, open actions with owners, and anything waiting on me. Keep it under one page.</pre><button type="button" class="copy" data-copy="Brief me on last week&#x27;s emails, meetings and chats about [project or customer name]. Give me: what changed, decisions made, open actions with owners, and anything waiting on me. Keep it under one page.">Copy prompt</button></div>
+  <p class="lbl">What you should see</p><p>A one-page brief. Once it's scheduled, a fresh one arrives every Monday morning.</p>
+  <p class="lbl">Then try</p><div class="chips"><button type="button" class="chip copy" data-copy="Add a short section at the top: the three things I should do first today.">Add a short section at the top: the three things I should do first today.</button></div>
+  <p class="fix"><span class="fix-k">If it doesn't work</span> No <b>Schedule</b> option? It is not switched on for your account yet. Ask your OpCo IT lead.</p>
+  <label class="done"><input type="checkbox" class="done-box" data-id="demo5"> I tried this one</label>
+</article>
+<article class="card demo" id="demo6" data-lic="m365">
+  <header class="card-head">
+    <span class="num">6</span>
+    <div class="head-text">
+      <p class="tag">Workspace</p>
+      <h3>Work across a set of files with a Workspace</h3>
+    </div>
+    <span class="badge b-m365">Microsoft 365 Copilot &middot; licensed</span>
+  </header>
+  <div class="lic-note">This one needs a Microsoft 365 Copilot licence. Watch the demo, or switch
+    the toggle at the top if you have one.</div>
+  <div class="grid2">
+    <div><p class="lbl">Where</p><p>Copilot app &rarr; <b>Workspaces</b> (previously called Notebooks) &rarr; <b>New</b>. Add three to five of your own files from OneDrive.</p></div>
+    <div><p class="lbl">You'll need</p><p>A handful of related files: plans, reports, forecasts, meeting notes.</p></div>
+  </div>
+  <p class="lbl">Prompt</p><div class="pbox"><pre class="ptext">Using the files in this workspace, draft a one-page summary of <span class="ph">[next quarter&#x27;s demand risks]</span>. Group the points by theme, say which file each point comes from, and end with three questions I should raise at <span class="ph">[our S&amp;OP meeting]</span>.</pre><button type="button" class="copy" data-copy="Using the files in this workspace, draft a one-page summary of [next quarter&#x27;s demand risks]. Group the points by theme, say which file each point comes from, and end with three questions I should raise at [our S&amp;OP meeting].">Copy prompt</button></div>
+  <p class="lbl">What you should see</p><p>A one-page summary with each point traced to the file it came from.</p>
+  <p class="lbl">Then try</p><div class="chips"><button type="button" class="chip copy" data-copy="Turn this into bullets for five slides, one idea per slide.">Turn this into bullets for five slides, one idea per slide.</button></div>
+  <p class="fix"><span class="fix-k">If it doesn't work</span> Use OneDrive files. SharePoint sites are not available to Copilot at Dover today.</p>
+  <label class="done"><input type="checkbox" class="done-box" data-id="demo6"> I tried this one</label>
+</article>
+<article class="card demo" id="demo7" data-lic="m365">
+  <header class="card-head">
+    <span class="num">7</span>
+    <div class="head-text">
+      <p class="tag">Agent Mode in Excel</p>
+      <h3>Build a variance view in Excel</h3>
+    </div>
+    <span class="badge b-m365">Microsoft 365 Copilot &middot; licensed</span>
+  </header>
+  <div class="lic-note">This one needs a Microsoft 365 Copilot licence. Watch the demo, or switch
+    the toggle at the top if you have one.</div>
+  <div class="grid2">
+    <div><p class="lbl">Where</p><p>Open your spreadsheet in Excel. Click in your data and press <b>Ctrl+T</b> to make it a table. Then open <b>Copilot</b> and switch on <b>Agent Mode</b>.</p></div>
+    <div><p class="lbl">You'll need</p><p>A spreadsheet with monthly numbers, such as actual and budget by cost centre.</p></div>
+  </div>
+  <p class="lbl">Prompt</p><div class="pbox"><pre class="ptext">Build a monthly variance view from this sheet comparing <span class="ph">[actual]</span> to <span class="ph">[budget]</span> by <span class="ph">[cost centre]</span>. Add a variance % column, flag anything over 10%, and add a chart of the five biggest variances. Explain each step you take.</pre><button type="button" class="copy" data-copy="Build a monthly variance view from this sheet comparing [actual] to [budget] by [cost centre]. Add a variance % column, flag anything over 10%, and add a chart of the five biggest variances. Explain each step you take.">Copy prompt</button></div>
+  <p class="lbl">What you should see</p><p>Copilot works step by step: it adds a column, applies the highlighting, then builds a chart.</p>
+  <p class="lbl">Then try</p><div class="chips"><button type="button" class="chip copy" data-copy="Explain the formula you used for variance % so I can check it.">Explain the formula you used for variance % so I can check it.</button><button type="button" class="chip copy" data-copy="Write three bullet points on these results for my monthly update. Numbers first.">Write three bullet points on these results for my monthly update. Numbers first.</button></div>
+  <p class="fix"><span class="fix-k">If it doesn't work</span> No <b>Agent Mode</b>? Use regular Copilot in Excel and ask for one step at a time.</p>
+  <label class="done"><input type="checkbox" class="done-box" data-id="demo7"> I tried this one</label>
+</article>
+<article class="card demo" id="demo8" data-lic="m365">
+  <header class="card-head">
+    <span class="num">8</span>
+    <div class="head-text">
+      <p class="tag">Teams + Outlook</p>
+      <h3>Recap the meeting, then send the follow-up</h3>
+    </div>
+    <span class="badge b-m365">Microsoft 365 Copilot &middot; licensed</span>
+  </header>
+  <div class="lic-note">This one needs a Microsoft 365 Copilot licence. Watch the demo, or switch
+    the toggle at the top if you have one.</div>
+  <div class="grid2">
+    <div><p class="lbl">Where</p><p><b>Step A, in Teams, while the meeting is still running:</b> select <b>Copilot</b> in the meeting controls and run the first prompt. Copy the answer.<br><b>Step B, in Outlook:</b> start a new email, select <b>Copilot</b> &rarr; <b>Help me write</b>, and run the second prompt with the recap pasted in.</p></div>
+    <div><p class="lbl">You'll need</p><p>A Teams meeting you are in, ideally one that is wrapping up.</p></div>
+  </div>
+  <p class="lbl">Step A prompt, in Teams</p><div class="pbox"><pre class="ptext">Recap this meeting so far: decisions made, action items with owner and due date, and open questions. Format it as a table.</pre><button type="button" class="copy" data-copy="Recap this meeting so far: decisions made, action items with owner and due date, and open questions. Format it as a table.">Copy prompt</button></div><p class="lbl">Step B prompt, in Outlook</p><div class="pbox"><pre class="ptext">Draft a follow-up email to the meeting attendees using the recap below. Thank them, list the decisions and the actions with owners and dates, and ask for corrections by <span class="ph">[Friday]</span>. Keep it under 200 words.
+
+<span class="ph">[paste the recap here]</span></pre><button type="button" class="copy" data-copy="Draft a follow-up email to the meeting attendees using the recap below. Thank them, list the decisions and the actions with owners and dates, and ask for corrections by [Friday]. Keep it under 200 words.
+
+[paste the recap here]">Copy prompt</button></div>
+  <p class="lbl">What you should see</p><p>A recap table from Teams, then a ready-to-edit email draft in Outlook.</p>
+  <p class="lbl">Then try</p><div class="chips"><button type="button" class="chip copy" data-copy="Make the email more direct and cut it to 120 words.">Make the email more direct and cut it to 120 words.</button></div>
+  <p class="fix"><span class="fix-k">If it doesn't work</span> <b>Important at Dover:</b> Copilot can only recap a meeting <b>while it is still running</b>. There is no transcript afterwards. Run Step A before the meeting ends. If you missed it, paste your own typed notes into Step B instead.</p>
+  <label class="done"><input type="checkbox" class="done-box" data-id="demo8"> I tried this one</label>
+</article>
+</section>
+
+<section id="more">
+  <h2>Keep going</h2>
+  <p class="sub">More prompts to try this week, grouped by app.</p>
+  <div class="tabs" role="tablist" aria-label="Prompts by app"><button type="button" role="tab" class="tab" id="tab-Word" aria-controls="panel-Word" aria-selected="true">Word</button><button type="button" role="tab" class="tab" id="tab-Excel" aria-controls="panel-Excel" aria-selected="false">Excel</button><button type="button" role="tab" class="tab" id="tab-PowerPoint" aria-controls="panel-PowerPoint" aria-selected="false">PowerPoint</button><button type="button" role="tab" class="tab" id="tab-Outlook" aria-controls="panel-Outlook" aria-selected="false">Outlook</button></div><div role="tabpanel" class="panel" id="panel-Word" aria-labelledby="tab-Word"><div class="mini-grid"><div class="mini"><p class="mini-t">Brief from a document</p><div class="pbox"><pre class="ptext">Using the document open here, draft a one-page briefing for <span class="ph">[OpCo site leads]</span>: purpose, what changes, who it affects, what they need to do, and by when.</pre><button type="button" class="copy" data-copy="Using the document open here, draft a one-page briefing for [OpCo site leads]: purpose, what changes, who it affects, what they need to do, and by when.">Copy</button></div></div><div class="mini"><p class="mini-t">FAQ for your teams</p><div class="pbox"><pre class="ptext">Turn this document into a ten-question FAQ in plain English for <span class="ph">[end users]</span>. Keep every date and requirement exactly as written.</pre><button type="button" class="copy" data-copy="Turn this document into a ten-question FAQ in plain English for [end users]. Keep every date and requirement exactly as written.">Copy</button></div></div><div class="mini"><p class="mini-t">Simplify for non-native readers</p><div class="pbox"><pre class="ptext">Rewrite this section in plain English. Shorter sentences, no idioms, no jargon. Keep the meaning identical.</pre><button type="button" class="copy" data-copy="Rewrite this section in plain English. Shorter sentences, no idioms, no jargon. Keep the meaning identical.">Copy</button></div></div><div class="mini"><p class="mini-t">Tidy up typed notes</p><div class="pbox"><pre class="ptext">These are my typed notes from a meeting. Organise them into decisions, open questions and actions with an owner for each.</pre><button type="button" class="copy" data-copy="These are my typed notes from a meeting. Organise them into decisions, open questions and actions with an owner for each.">Copy</button></div></div></div></div><div role="tabpanel" class="panel" id="panel-Excel" aria-labelledby="tab-Excel" hidden><div class="mini-grid"><div class="mini"><p class="mini-t">Ask in plain English</p><div class="pbox"><pre class="ptext">In three sentences, which <span class="ph">[sites]</span> and <span class="ph">[categories]</span> stand out in this table, and why?</pre><button type="button" class="copy" data-copy="In three sentences, which [sites] and [categories] stand out in this table, and why?">Copy</button></div></div><div class="mini"><p class="mini-t">Add a calculated column</p><div class="pbox"><pre class="ptext">Add a calculated column showing <span class="ph">[days open]</span>, then explain the formula you wrote so I understand it.</pre><button type="button" class="copy" data-copy="Add a calculated column showing [days open], then explain the formula you wrote so I understand it.">Copy</button></div></div><div class="mini"><p class="mini-t">Chart the pattern</p><div class="pbox"><pre class="ptext">Add a chart that makes the biggest trend obvious to a reader outside IT. Label the axes plainly.</pre><button type="button" class="copy" data-copy="Add a chart that makes the biggest trend obvious to a reader outside IT. Label the axes plainly.">Copy</button></div></div><div class="mini"><p class="mini-t">Clean the data first</p><div class="pbox"><pre class="ptext">Format this range as a table with headers, flag duplicate rows and highlight rows with missing values.</pre><button type="button" class="copy" data-copy="Format this range as a table with headers, flag duplicate rows and highlight rows with missing values.">Copy</button></div></div></div></div><div role="tabpanel" class="panel" id="panel-PowerPoint" aria-labelledby="tab-PowerPoint" hidden><div class="mini-grid"><div class="mini"><p class="mini-t">Deck from your own document</p><div class="pbox"><pre class="ptext">Create an eight-slide briefing deck from <span class="ph">[file name]</span>, using the template I have open. Audience: <span class="ph">[OpCo IT leaders]</span>.</pre><button type="button" class="copy" data-copy="Create an eight-slide briefing deck from [file name], using the template I have open. Audience: [OpCo IT leaders].">Copy</button></div></div><div class="mini"><p class="mini-t">Set the slide rules</p><div class="pbox"><pre class="ptext">For each slide: a title of seven words or fewer, three or four short bullets, and a speaker note that expands the point in a calm, direct voice.</pre><button type="button" class="copy" data-copy="For each slide: a title of seven words or fewer, three or four short bullets, and a speaker note that expands the point in a calm, direct voice.">Copy</button></div></div><div class="mini"><p class="mini-t">Refine one slide</p><div class="pbox"><pre class="ptext">Tighten slide four to five words per bullet, and turn slide seven into a two-column comparison.</pre><button type="button" class="copy" data-copy="Tighten slide four to five words per bullet, and turn slide seven into a two-column comparison.">Copy</button></div></div><div class="mini"><p class="mini-t">Reorder the story</p><div class="pbox"><pre class="ptext">Reorganise this deck so the recommendation comes first and the supporting detail follows.</pre><button type="button" class="copy" data-copy="Reorganise this deck so the recommendation comes first and the supporting detail follows.">Copy</button></div></div></div></div><div role="tabpanel" class="panel" id="panel-Outlook" aria-labelledby="tab-Outlook" hidden><div class="mini-grid"><div class="mini"><p class="mini-t">Summarise a long thread</p><div class="pbox"><pre class="ptext">Summarise this thread. Separate what is decided from what is still open, and list who owns each open item.</pre><button type="button" class="copy" data-copy="Summarise this thread. Separate what is decided from what is still open, and list who owns each open item.">Copy</button></div></div><div class="mini"><p class="mini-t">Find what is yours</p><div class="pbox"><pre class="ptext">List the actions assigned to me in this thread, with the date each was requested and what is still outstanding.</pre><button type="button" class="copy" data-copy="List the actions assigned to me in this thread, with the date each was requested and what is still outstanding.">Copy</button></div></div><div class="mini"><p class="mini-t">Three ways to reply</p><div class="pbox"><pre class="ptext">Draft three replies: A. confirm and commit to a date. B. agree in principle but ask two clarifying questions. C. redirect to the right owner with a warm handover.</pre><button type="button" class="copy" data-copy="Draft three replies: A. confirm and commit to a date. B. agree in principle but ask two clarifying questions. C. redirect to the right owner with a warm handover.">Copy</button></div></div><div class="mini"><p class="mini-t">Catch up after time away</p><div class="pbox"><pre class="ptext">Summarise what I missed in my inbox since <span class="ph">[Monday]</span>, grouped by topic, three bullets each.</pre><button type="button" class="copy" data-copy="Summarise what I missed in my inbox since [Monday], grouped by topic, three bullets each.">Copy</button></div></div></div></div>
+
+  <h2 style="margin-block-start:28px">Make any answer better</h2>
+  <p class="sub">Your second message matters as much as the first. Click one to copy it.</p>
+  <div class="power"><button type="button" class="chip copy" data-copy="Make it shorter: five bullets maximum.">Make it shorter: five bullets maximum.</button><button type="button" class="chip copy" data-copy="Rewrite this for a non-technical audience.">Rewrite this for a non-technical audience.</button><button type="button" class="chip copy" data-copy="Put this in a table.">Put this in a table.</button><button type="button" class="chip copy" data-copy="What did you assume? What&#x27;s missing?">What did you assume? What&#x27;s missing?</button><button type="button" class="chip copy" data-copy="Make the tone more direct.">Make the tone more direct.</button><button type="button" class="chip copy" data-copy="Show me where in the document you found that.">Show me where in the document you found that.</button></div>
+
+  <h2 style="margin-block-start:28px">Build your own prompt</h2>
+  <p class="sub">Good prompts have four parts. Fill in the boxes, then copy.</p>
+  <div class="builder">
+    <div>
+      <label for="b-goal">Goal <small>What do you need?</small></label>
+      <textarea id="b-goal" placeholder="Draft a one-page status update on the network refresh."></textarea>
+      <label for="b-context">Context <small>Who is it for? What's the situation?</small></label>
+      <textarea id="b-context" placeholder="For my OpCo leadership team. They want risks and dates, not technical detail."></textarea>
+      <label for="b-source">Source <small>Which file, email or meeting should it use?</small></label>
+      <textarea id="b-source" placeholder="Use the attached project plan and last week's status email."></textarea>
+      <label for="b-expect">Expectation <small>Format, length, tone</small></label>
+      <textarea id="b-expect" placeholder="Under 250 words. Three headings: done, next, at risk. Plain English."></textarea>
+    </div>
+    <div class="out" aria-live="polite">
+      <span class="muted">Your prompt</span>
+      <pre id="builder-out"></pre>
+      <button type="button" class="copy" id="builder-copy" data-copy="">Copy my prompt</button>
+    </div>
+  </div>
+</section>
+
+<section id="checks">
+  <h2>Before you press Enter</h2>
+  <div class="checks">
+    <div><h3>1. Is it OK to share?</h3><p>Is everything I'm pasting or uploading allowed under Dover's data policy?</p></div>
+    <div><h3>2. Is it a draft, not a decision?</h3><p>Am I asking for help drafting, summarising or analysing, not for a decision about a person?</p></div>
+    <div><h3>3. Will I check it?</h3><p>Will I read and fix the answer before anyone else sees it?</p></div>
+  </div>
+</section>
+
+<section id="help">
+  <h2>If something doesn't work</h2>
+  <details><summary>I don't see the shield, or it looks like a personal account.</summary><p>Sign out and sign back in with your Dover work account. The shield means enterprise data protection is on: your prompts and answers stay inside Dover's Microsoft 365 boundary and are not used to train AI models.</p></details><details><summary>Copilot says it can't see my email, meetings or files.</summary><p>That is expected in Copilot Chat. Without a Microsoft 365 Copilot licence it works with the web and the files you upload. With a licence, switch to <b>Work</b> mode.</p></details><details><summary>I see two options above the chat box: Chat and Cowork.</summary><p>Choose <b>Chat</b> for everything in this session. Cowork is a separate capability that is not part of today's demos.</p></details><details><summary>I can't upload my file.</summary><p>Try opening it from OneDrive instead, or paste the text in. If it is still blocked, the file's sensitivity label or a Dover policy may be stopping it. That is the control working as intended.</p></details><details><summary>I don't see Schedule, Workspaces or Agent Mode.</summary><p>Some features are switched on in stages. Ask your OpCo IT lead or Champion whether they are enabled for your account.</p></details><details><summary>The answer looks wrong, or quotes something that isn't there.</summary><p>Ask: &ldquo;Show me where in the document you found that.&rdquo; Check every number before you share anything. Copilot drafts; you decide.</p></details><details><summary>How do I keep a prompt that worked?</summary><p>Point at your prompt in Copilot Chat and choose <b>Save prompt</b>. Saved prompts appear in the <b>Prompt gallery</b>, where you can reuse them and share them with your team.</p></details>
+</section>
+
+</main>
+<footer><div class="wrap">
+  <p><b>Dover &mdash; For Internal Use Only.</b> Prepared by Microsoft for the Dover Global IT Summit.</p>
+  <p>Feature availability depends on what Dover IT has enabled for your account.</p>
+  <p><button type="button" class="reset" id="reset">Reset my progress</button></p>
+</div></footer>
+<script>
+(function(){
+  function copyText(t, btn){
+    function ok(){
+      var old = btn.getAttribute('data-label') || btn.textContent;
+      if(!btn.getAttribute('data-label')) btn.setAttribute('data-label', old);
+      btn.classList.add('ok');
+      if(!btn.classList.contains('chip')) btn.textContent = 'Copied \u2713';
+      setTimeout(function(){ btn.classList.remove('ok');
+        if(!btn.classList.contains('chip')) btn.textContent = btn.getAttribute('data-label'); }, 1600);
+    }
+    function fallback(){
+      var ta = document.createElement('textarea'); ta.value = t;
+      ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); ok(); }catch(e){ window.prompt('Copy this prompt:', t); }
+      document.body.removeChild(ta);
+    }
+    if(navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(t).then(ok, fallback);
+    } else { fallback(); }
+  }
+  document.addEventListener('click', function(e){
+    var b = e.target.closest('.copy');
+    if(!b) return;
+    var t = b.getAttribute('data-copy');
+    if(b.id === 'builder-copy'){ t = document.getElementById('builder-out').textContent; }
+    copyText(t, b);
+  });
+
+  /* licence toggle */
+  var KEY_LIC='dover-copilot-lic', KEY_DONE='dover-copilot-done';
+  function store(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function load(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  var segBtns = document.querySelectorAll('.seg button');
+  function setLic(v){
+    document.body.classList.toggle('chat-only', v === 'chat');
+    segBtns.forEach(function(b){ b.setAttribute('aria-pressed', b.getAttribute('data-lic') === v ? 'true':'false'); });
+    store(KEY_LIC, v);
+  }
+  segBtns.forEach(function(b){ b.addEventListener('click', function(){ setLic(b.getAttribute('data-lic')); }); });
+  setLic(load(KEY_LIC) || 'm365');
+
+  /* progress */
+  var boxes = document.querySelectorAll('.done-box');
+  var done = {};
+  try{ done = JSON.parse(load(KEY_DONE) || '{}'); }catch(e){ done = {}; }
+  function refresh(){
+    var n = 0;
+    boxes.forEach(function(x){
+      var on = !!done[x.getAttribute('data-id')];
+      x.checked = on; x.closest('.card').classList.toggle('is-done', on); if(on) n++;
+    });
+    document.getElementById('prog-n').textContent = n;
+  }
+  boxes.forEach(function(x){ x.addEventListener('change', function(){
+    done[x.getAttribute('data-id')] = x.checked; store(KEY_DONE, JSON.stringify(done)); refresh(); }); });
+  document.getElementById('reset').addEventListener('click', function(){ done = {}; store(KEY_DONE,'{}'); refresh(); });
+  refresh();
+
+  /* tabs */
+  var tabs = document.querySelectorAll('.tab');
+  tabs.forEach(function(t){ t.addEventListener('click', function(){
+    tabs.forEach(function(o){ o.setAttribute('aria-selected','false');
+      document.getElementById(o.getAttribute('aria-controls')).hidden = true; });
+    t.setAttribute('aria-selected','true');
+    document.getElementById(t.getAttribute('aria-controls')).hidden = false;
+  }); });
+
+  /* prompt builder */
+  var f = ['b-goal','b-context','b-source','b-expect'].map(function(id){ return document.getElementById(id); });
+  var out = document.getElementById('builder-out');
+  function build(){
+    var lab = ['GOAL','CONTEXT','SOURCE','EXPECTATION'], parts = [];
+    f.forEach(function(el,i){ var v = el.value.trim(); if(v) parts.push(lab[i] + ': ' + v); });
+    out.textContent = parts.length ? parts.join('\n') : 'Fill in the boxes and your prompt appears here.';
+  }
+  f.forEach(function(el){ el.addEventListener('input', build); });
+  build();
+})();
+</script>
+</body>
+</html>
